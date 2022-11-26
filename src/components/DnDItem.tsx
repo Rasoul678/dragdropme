@@ -9,7 +9,14 @@ interface IProps extends PropsWithChildren {
   handleDragStart: (e: TEvent) => void
 }
 
-const DnDItem: React.FC<IProps> = ({ item, classes, placeholder, children, handleDragStart }) => {
+const DnDItem: React.FC<IProps> = (props) => {
+  const { item, classes, placeholder, children, handleDragStart } = props
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const target = e.target as HTMLElement
+    target.style.opacity = '1'
+  }
+
   if (item.value === 'placeholder') {
     return (
       <div style={{ ...styles.placeholder }} className={classes?.placeholder}>
@@ -19,7 +26,14 @@ const DnDItem: React.FC<IProps> = ({ item, classes, placeholder, children, handl
   }
 
   return (
-    <div id={item.id} style={{ ...styles.item }} className={classes?.item} draggable onDragStart={handleDragStart}>
+    <div
+      id={item.id}
+      style={{ ...styles.item }}
+      className={classes?.item}
+      draggable
+      onDragStart={handleDragStart}
+      onMouseLeave={handleMouseLeave}
+    >
       {children}
     </div>
   )

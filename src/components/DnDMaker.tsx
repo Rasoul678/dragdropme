@@ -59,10 +59,6 @@ const DnDMaker: React.FC<IProps> = (props) => {
   const handleDrop = (e: TEvent, newGroup: string) => {
     const id = e.dataTransfer.getData('text/plain')
 
-    if (draggingElement.current) {
-      draggingElement.current.style.opacity = '1'
-    }
-
     //* Find the dragging item
     const movedItem = items.find((item) => item.id === id)
     let newItems
