@@ -1254,10 +1254,10 @@ dotenv@^7.0.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-7.0.0.tgz#a2be3cd52736673206e8a85fb5210eea29628e7c"
   integrity sha512-M3NhsLbV1i6HuGzBUH8vXrtxOk+tWmzWKDMbAVSUp3Zsjm7ywFeuwrUXhmhQyRK1q5B5GGy7hcXPbj3bnfZg2g==
 
-dragdropme@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/dragdropme/-/dragdropme-1.0.0.tgz#6108b2e42c0051587246833e0936cd2559d3c108"
-  integrity sha512-FQKn1H46b1LdCX4tSMQcr3frQDTAa1RuFjxD7Ugd2UVJAAacsUWM1jYpGbx3weFFV1lK+3UoWjqSTR+SSLgxAA==
+dragdropme@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/dragdropme/-/dragdropme-1.0.4.tgz#c4315f8dd914818dcc3c893e68a6f09d15f6aa85"
+  integrity sha512-L98/uwZML7svJAXfLQRbkYLtEeTCxLCD3R4SktDNw89XK4qrqmihGDsFuyzs3sM5aD6MrU+rICrg5ldAukhvXA==
 
 electron-to-chromium@^1.4.251:
   version "1.4.284"
