@@ -1,0 +1,59 @@
+{
+  "name": "dragdrop",
+  "version": "1.0.0",
+  "description": "This is a simple drag and drop component for ReactJs",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rasoul678/dragdrop.git"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "yarn build:esm && yarn build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
+    "prettier": "prettier --write \"{src,tests,example/src}/**/*.{js,ts,jsx,tsx}\"",
+    "test": "jest --config jestconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run prettier && npm run lint"
+  },
+  "keywords": [
+    "drag&drop",
+    "react",
+    "dnd",
+    "typescript"
+  ],
+  "author": "Rasoul Hesami Rostami",
+  "license": "MIT",
+  "devDependencies": {
+    "@testing-library/react": "^13.4.0",
+    "@types/jest": "^29.2.3",
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jest": "^29.3.1",
+    "jest-canvas-mock": "^2.4.0",
+    "jest-environment-jsdom": "^29.3.1",
+    "prettier": "^2.8.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ts-jest": "^29.0.3",
+    "typescript": "^4.9.3"
+  }
+}
