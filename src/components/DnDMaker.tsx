@@ -245,7 +245,7 @@ const DnDMaker: React.FC<IProps> = (props) => {
             <div
               data-type='items-wrapper'
               style={{ ...styles.itemsWrapper }}
-              ref={(ref) => ref && autoAnimate(ref, { duration: 200 })}
+              ref={(ref) => ref && autoAnimate(ref, { duration: 250 })}
             >
               {items
                 .filter((item) => item.group === group)
@@ -259,7 +259,7 @@ const DnDMaker: React.FC<IProps> = (props) => {
                         style={{
                           ...styles.placeholder,
                           width: `${width - 4}px`,
-                          height: `${height + 10}px`,
+                          height: `${height + 20}px`,
                         }}
                         className={classes?.placeholder}
                         key={thing.id}
