@@ -42,6 +42,9 @@ root.render(
       onDrop={(items, movedItem) => console.log(items, movedItem)}
       onDragStart={(e, item) => console.log(e, item)}
       onDragOver={(e) => console.log(e, "over")}
+      animation={{
+        enable: true,
+      }}
     />
   </React.StrictMode>
 );
