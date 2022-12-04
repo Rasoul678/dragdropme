@@ -1,6 +1,6 @@
 {
   "name": "dragdropme",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "This is a simple Drag&Drop component for ReactJs",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -10,7 +10,7 @@
     "url": "git+https://github.com/Rasoul678/dragdropme.git"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "react": ">=17"
   },
   "files": [
     "dist",

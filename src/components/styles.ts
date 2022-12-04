@@ -43,6 +43,6 @@ export const styles: { [key: string]: CSSProperties } = {
     color: 'rgba(18, 18, 18, 0.7)',
     display: 'grid',
     placeItems: 'center',
-    margin: "5px 0",
+    margin: '5px 0',
   },
 }

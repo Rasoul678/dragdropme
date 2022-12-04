@@ -7,7 +7,7 @@
 
 It is simple React drag and drop package.
 
-[**Live Demo**](https://rasoul678.github.io/dragdropme/)
+## [**Live Demo**](https://rasoul678.github.io/dragdropme/)
 
 ## Installation:
 
@@ -43,9 +43,17 @@ const items = {
   'group five' : [{ id: '5', value: 'VueJS' }],
 }
 
+const DnDItem = ({ item }) => (<div>{item?.value}</div>);
+
 root.render(
     <React.StrictMode>
-        <DnDMaker items={items}/>
+        <DnDMaker
+          items={items}
+          renderItem={<DnDItem />}
+          animation={{
+            enable: true,
+            duration: 200
+          }}/>
     </React.StrictMode>,
 )
 

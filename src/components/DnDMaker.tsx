@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useId, useRef, useState, cloneElement } from 'react'
+import React, { memo, useCallback, useRef, useState, cloneElement } from 'react'
 import { styles } from './styles'
 import autoAnimate from '@formkit/auto-animate'
 
@@ -17,10 +17,16 @@ export interface Classes {
   placeholder?: string
 }
 
+export interface Animation {
+  enable?: boolean
+  duration?: number
+}
+
 interface IProps {
   items: Record<string, Omit<ItemType, 'group'>[]>
   classes?: Classes
   placeholder?: string
+  animation?: Animation
   onDrop?: (items: ItemType[], movedItem: ItemType) => void
   onDragStart?: (e: DragEvent, draggingItem: ItemType) => void
   onDragOver?: (e: DragEvent) => void
@@ -28,7 +34,18 @@ interface IProps {
 }
 
 const DnDMaker: React.FC<IProps> = (props) => {
-  const { items: defaultItems, onDrop, onDragStart, onDragOver, classes, placeholder = 'Drop!', renderItem } = props
+  const {
+    items: defaultItems,
+    onDrop,
+    onDragStart,
+    onDragOver,
+    classes,
+    placeholder = 'Drop!',
+    renderItem,
+    animation,
+  } = props
+
+  const { enable, duration } = animation || {}
 
   const addGroupToItem = (group: [string, Omit<ItemType, 'group'>[]]) => {
     const [groupName, items] = group
@@ -40,7 +57,7 @@ const DnDMaker: React.FC<IProps> = (props) => {
   const flatItems = Object.values(nestedItems).flat() as ItemType[]
   const groups = Object.keys(nestedItems)
 
-  const newId = useId()
+  const placeholderId = useRef(Math.random().toString(36).substring(2, 12))
   const [items, setItems] = useState(flatItems)
   const originRef = useRef('')
   const draggingElement = useRef<HTMLElement | null>(null)
@@ -172,11 +189,12 @@ const DnDMaker: React.FC<IProps> = (props) => {
 
   //* Add placeholder to a column
   const addPlaceholderTo = (groupName: string, id = '') => {
-    if (id === ':r1:') return
+    if (id === placeholderId.current) return
+
     removePlaceholder()
 
     const placeHolder = {
-      id: newId,
+      id: placeholderId.current,
       group: groupName,
       value: 'placeholder',
     }
@@ -245,7 +263,7 @@ const DnDMaker: React.FC<IProps> = (props) => {
             <div
               data-type='items-wrapper'
               style={{ ...styles.itemsWrapper }}
-              ref={(ref) => ref && autoAnimate(ref, { duration: 250 })}
+              ref={(ref) => enable && ref && autoAnimate(ref, { duration: duration ?? 150 })}
             >
               {items
                 .filter((item) => item.group === group)
@@ -259,7 +277,7 @@ const DnDMaker: React.FC<IProps> = (props) => {
                         style={{
                           ...styles.placeholder,
                           width: `${width - 4}px`,
-                          height: `${height + 20}px`,
+                          height: `${height + 15}px`,
                         }}
                         className={classes?.placeholder}
                         key={thing.id}
