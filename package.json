@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rasoul678/dragdrop.git"
+    "url": "git+https://github.com/Rasoul678/dragdropme.git"
   },
   "keywords": [],
   "author": "Rasoul Hesami Rostami",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Rasoul678/dragdrop/issues"
+    "url": "https://github.com/Rasoul678/dragdropme/issues"
   },
-  "homepage": "https://github.com/Rasoul678/dragdrop#readme",
+  "homepage": "https://github.com/Rasoul678/dragdropme#readme",
   "devDependencies": {
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
@@ -31,7 +31,7 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
-    "dragdropme": "^1.1.7",
+    "dragdropme": "^1.1.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
