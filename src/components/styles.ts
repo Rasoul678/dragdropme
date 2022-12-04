@@ -21,10 +21,15 @@ export const styles: { [key: string]: CSSProperties } = {
     textAlign: 'center',
     textTransform: 'capitalize',
   },
+  itemsWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    padding: '5px',
+  },
   item: {
     backgroundColor: 'rgba(100, 102,149,1)',
     color: '#fff',
-    margin: '10px',
     padding: '10px',
     borderRadius: '5px',
     cursor: 'grab',
@@ -32,11 +37,11 @@ export const styles: { [key: string]: CSSProperties } = {
   placeholder: {
     fontWeight: 700,
     backgroundColor: '#fff',
-    padding: '10px',
     border: '2px dashed rgba(18, 18, 18, 0.7)',
-    margin: '10px',
     borderRadius: '5px',
     textAlign: 'center',
     color: 'rgba(18, 18, 18, 0.7)',
+    display: 'grid',
+    placeItems: 'center',
   },
 }

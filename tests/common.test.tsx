@@ -6,6 +6,6 @@ import { DnDMaker } from '../src'
 
 describe('render', () => {
   it('renders without crashing', () => {
-    render(<DnDMaker defaultItems={[]} groups={[]} />)
+    render(<DnDMaker items={{ one: [{ id: '1', value: 'One' }] }} />)
   })
 })

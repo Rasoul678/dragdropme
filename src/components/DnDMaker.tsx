@@ -1,14 +1,14 @@
-import React, { memo, useCallback, useId, useRef, useState } from 'react'
-import DnDItem from './DnDItem'
+import React, { memo, useCallback, useId, useRef, useState, cloneElement } from 'react'
 import { styles } from './styles'
+import autoAnimate from '@formkit/auto-animate'
 
 export type ItemType = {
   id: string
   group: string
-  value: string
+  value: string | JSX.Element
 }
 
-export type TEvent = React.DragEvent<HTMLDivElement>
+export type DragEvent = React.DragEvent<HTMLDivElement>
 
 export interface Classes {
   wrapper?: string
@@ -18,62 +18,99 @@ export interface Classes {
 }
 
 interface IProps {
-  defaultItems: ItemType[]
-  groups: string[]
+  items: Record<string, Omit<ItemType, 'group'>[]>
   classes?: Classes
   placeholder?: string
   onDrop?: (items: ItemType[], movedItem: ItemType) => void
-  onDragStart?: (e: TEvent, draggingItem: ItemType) => void
-  onDragOver?: (e: TEvent) => void
+  onDragStart?: (e: DragEvent, draggingItem: ItemType) => void
+  onDragOver?: (e: DragEvent) => void
+  renderItem?: JSX.Element
 }
 
 const DnDMaker: React.FC<IProps> = (props) => {
-  const { defaultItems = [], groups = [], onDrop, onDragStart, onDragOver, classes, placeholder = 'Drop!' } = props
+  const { items: defaultItems, onDrop, onDragStart, onDragOver, classes, placeholder = 'Drop!', renderItem } = props
+
+  const addGroupToItem = (group: [string, Omit<ItemType, 'group'>[]]) => {
+    const [groupName, items] = group
+    return [groupName, items.map((item) => ({ ...item, group: groupName }))]
+  }
+
+  const nestedItems = Object.fromEntries(Object.entries(defaultItems).map(addGroupToItem))
+
+  const flatItems = Object.values(nestedItems).flat() as ItemType[]
+  const groups = Object.keys(nestedItems)
+
   const newId = useId()
-  const [items, setItems] = useState(defaultItems)
-  const [originGroup, setOriginGroup] = useState('')
+  const [items, setItems] = useState(flatItems)
+  const originRef = useRef('')
   const draggingElement = useRef<HTMLElement | null>(null)
+  const hoverIdRef = useRef('')
+  const sizeRef = useRef({ width: 0, height: 0 })
+  const startYRef = useRef(0)
+  const isAfterRef = useRef(true)
 
   //* Handle drag start
   const handleDragStart = useCallback(
-    (e: TEvent) => {
+    (e: DragEvent) => {
       const el = e.target as HTMLElement
       draggingElement.current = el
       e.dataTransfer.setData('text/plain', el.id)
 
-      const draggingItem: ItemType | undefined = items.find((item) => item.id === el.id)
+      startYRef.current = e.pageY
 
-      if (draggingItem) {
-        setOriginGroup(draggingItem.group)
-        onDragStart?.(e, draggingItem)
+      const { width, height } = el.getBoundingClientRect()
+
+      sizeRef.current = {
+        width: Math.trunc(width),
+        height: Math.trunc(height),
       }
 
-      requestAnimationFrame(() => {
-        el.style.opacity = '0.5'
-      })
+      const draggingItem = items.find((item) => item.id === el.id)
+
+      if (draggingItem) {
+        originRef.current = draggingItem.group
+        onDragStart?.(e, draggingItem)
+      }
     },
     [onDragStart, items],
   )
 
   //* Handle drop
-  const handleDrop = (e: TEvent, newGroup: string) => {
+  const handleDrop = (e: DragEvent, newGroup: string) => {
     const id = e.dataTransfer.getData('text/plain')
 
     //* Find the dragging item
     const movedItem = items.find((item) => item.id === id)
     let newItems
-    const draggingGroup = draggingElement.current?.parentElement?.parentElement?.dataset.groupname
 
-    if (movedItem && draggingGroup !== newGroup) {
+    if (movedItem) {
       //* Remove dragging item from items list
       newItems = items.filter((item) => item.id !== id)
+
       //* Change the group name
       movedItem.group = newGroup
-      //* Add to the end of the list and remove placeholder
-      newItems = [...newItems, movedItem].filter((item) => item.value !== 'placeholder')
+
+      if (hoverIdRef.current) {
+        //* Add to index
+        let foundIndex = newItems.findIndex((item) => item.id === hoverIdRef.current)
+
+        if (isAfterRef.current) {
+          foundIndex += 1
+        }
+
+        newItems.splice(foundIndex, 0, movedItem)
+      } else {
+        //* Add to the end of the list
+        newItems.push(movedItem)
+      }
+
+      //* Remove placeholder
+      newItems = newItems.filter((item) => item.value !== 'placeholder')
 
       //* Set new items list
       setItems(newItems)
+
+      //* Call onDrop callback
       onDrop?.(newItems, movedItem)
     }
 
@@ -81,22 +118,43 @@ const DnDMaker: React.FC<IProps> = (props) => {
   }
 
   //* Handle drag over
-  const handleDragOver = (e: TEvent) => {
+  const handleDragOver = (e: DragEvent) => {
     e.preventDefault()
+    const offsetY = e.pageY - startYRef.current
 
-    const groupName = (e.target as HTMLElement).dataset.groupname
+    isAfterRef.current = offsetY > 0
+
+    startYRef.current = e.pageY
+
+    const target = e.target as HTMLElement
+    const currentTarget = e.currentTarget as HTMLElement
+
+    const groupName = currentTarget.dataset.groupname
+    const hoverElementID = findParentByType(target).id
+
+    if (target.dataset.type === 'items-wrapper') {
+      return
+    }
+
+    if (hoverElementID !== ':r1:') {
+      hoverIdRef.current = hoverElementID
+    }
 
     //* Exchange placeholder regarding to the group name
     if (groupName) {
-      if (originGroup !== groupName) {
-        addPlaceholderTo(groupName)
+      addPlaceholderTo(groupName, hoverElementID)
+
+      if (originRef.current === groupName) {
+        draggingElement.current!.style.visibility = 'hidden'
+        draggingElement.current!.style.position = 'absolute'
       }
+
       onDragOver?.(e)
     }
   }
 
   //* handle drag leave
-  const handleDragLeave = (e: TEvent) => {
+  const handleDragLeave = (e: DragEvent) => {
     const relatedTarget = e.relatedTarget as HTMLElement
     //* Remove placeholder if mouse leaves the groups area
     if (relatedTarget.dataset.groups === 'groups') {
@@ -113,80 +171,126 @@ const DnDMaker: React.FC<IProps> = (props) => {
   }
 
   //* Add placeholder to a column
-  const addPlaceholderTo = (groupName: string) => {
+  const addPlaceholderTo = (groupName: string, id = '') => {
+    if (id === ':r1:') return
     removePlaceholder()
+
     const placeHolder = {
       id: newId,
       group: groupName,
       value: 'placeholder',
     }
-    setItems((oldItems) => {
-      const newItems = [...oldItems, placeHolder]
-      return newItems
-    })
+
+    if (id) {
+      setItems((oldItems) => {
+        let foundIndex = oldItems.findIndex((item) => item.id === id)
+
+        if (isAfterRef.current) {
+          foundIndex += 1
+        }
+
+        const newItems = [...oldItems]
+        newItems.splice(foundIndex, 0, placeHolder)
+        return newItems
+      })
+    } else {
+      setItems((oldItems) => {
+        const newItems = [...oldItems, placeHolder]
+        return newItems
+      })
+    }
   }
 
-  const handleDragEnter = (e: TEvent) => {
+  const handleDragEnter = (e: DragEvent) => {
     e.preventDefault()
   }
 
-  const dragEnterGroups = (e: TEvent) => {
-    e.preventDefault()
+  const handleDragEnd = (e: DragEvent) => {
+    const target = e.target as HTMLElement
+    target.style.visibility = 'unset'
+    target.style.position = 'initial'
+    removePlaceholder()
   }
 
-  const dragOverGroups = (e: TEvent) => {
-    e.preventDefault()
-  }
+  const findParentByType = (element: HTMLElement, neddle = 'item'): HTMLElement => {
+    let parent: HTMLElement | null = null
 
-  //* Handle drop between groups
-  const dropGroups = () => {
-    if (draggingElement.current) {
-      draggingElement.current.style.opacity = '1'
+    if ([neddle, 'group', 'placeholder'].includes(element.getAttribute('data-type') || '')) {
+      parent = element
+    } else {
+      while (!parent) {
+        parent = findParentByType(element.parentElement!)
+      }
     }
 
-    draggingElement.current = null
+    return parent
   }
 
   return (
-    <div
-      style={{ ...styles.groups }}
-      className={classes?.wrapper}
-      data-groups='groups'
-      onDragEnter={dragEnterGroups}
-      onDragOver={dragOverGroups}
-      onDrop={dropGroups}
-    >
-      {groups.map((group) => (
-        <div
-          style={{ ...styles.group }}
-          className={classes?.group}
-          data-groupname={group}
-          key={group}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, group)}
-        >
-          <h2 style={{ ...styles.groupTitle }}>{group}</h2>
-          <div>
-            {items
-              .filter((item) => item.group === group)
-              .map((thing) => {
-                return (
-                  <DnDItem
-                    key={thing.id}
-                    handleDragStart={handleDragStart}
-                    classes={classes}
-                    placeholder={placeholder}
-                    item={thing}
-                  >
-                    {thing.value}
-                  </DnDItem>
-                )
-              })}
+    <div style={{ ...styles.groups }} className={classes?.wrapper} data-groups='groups'>
+      {groups.map((group) => {
+        return (
+          <div
+            style={{ ...styles.group }}
+            className={classes?.group}
+            data-groupname={group}
+            data-type='group'
+            key={group}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, group)}
+          >
+            <h2 style={{ ...styles.groupTitle }}>{group}</h2>
+            <div
+              data-type='items-wrapper'
+              style={{ ...styles.itemsWrapper }}
+              ref={(ref) => ref && autoAnimate(ref, { duration: 200 })}
+            >
+              {items
+                .filter((item) => item.group === group)
+                .map((thing) => {
+                  const { width, height } = sizeRef.current
+
+                  //* Render placeholder
+                  if (thing.value === 'placeholder') {
+                    return (
+                      <div
+                        style={{
+                          ...styles.placeholder,
+                          width: `${width - 4}px`,
+                          height: `${height + 10}px`,
+                        }}
+                        className={classes?.placeholder}
+                        key={thing.id}
+                        id={thing.id}
+                        data-type='placeholder'
+                      >
+                        {placeholder}
+                      </div>
+                    )
+                  }
+
+                  //* Render items
+                  return (
+                    <div
+                      id={thing.id}
+                      key={thing.id}
+                      data-type='item'
+                      style={renderItem ? { cursor: 'grab' } : { ...styles.item }}
+                      className={renderItem ? '' : classes?.item}
+                      draggable
+                      onDragStart={handleDragStart}
+                      onDragEnd={handleDragEnd}
+                    >
+                      {renderItem ? cloneElement(renderItem, { item: thing }, null) : thing.value}
+                    </div>
+                  )
+                })}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

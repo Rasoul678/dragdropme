@@ -1,13 +1,13 @@
 {
   "name": "dragdropme",
   "version": "1.0.4",
-  "description": "This is a simple drag and drop component for ReactJs",
+  "description": "This is a simple Drag&Drop component for ReactJs",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rasoul678/dragdrop.git"
+    "url": "git+https://github.com/Rasoul678/dragdropme.git"
   },
   "peerDependencies": {
     "react": ">=18"
@@ -18,14 +18,14 @@
     "README.md"
   ],
   "scripts": {
-    "build": "yarn build:esm && yarn build:cjs",
+    "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
     "prettier": "prettier --write \"{src,tests,example/src}/**/*.{js,ts,jsx,tsx}\"",
     "test": "jest --config jestconfig.json",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run prettier && npm run lint"
+    "prepublishOnly": "npm run test && npm run prettier && npm run lint"
   },
   "keywords": [
     "drag&drop",
@@ -33,7 +33,11 @@
     "dnd",
     "typescript"
   ],
-  "author": "Rasoul Hesami Rostami",
+  "author": {
+    "name": "Rasoul Hesami Rostami",
+    "email": "h.rostami.r@gmail.com",
+    "url": "https://rasoulmedia.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "@testing-library/react": "^13.4.0",
@@ -55,5 +59,8 @@
     "react-dom": "^18.2.0",
     "ts-jest": "^29.0.3",
     "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "@formkit/auto-animate": "^1.0.0-beta.5"
   }
 }
