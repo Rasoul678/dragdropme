@@ -5,37 +5,43 @@ import { DnDMaker } from "dragdropme";
 const rootelement = document.getElementById("root") as HTMLElement;
 const root = ReactDOM.createRoot(rootelement);
 
-const groups = [
-  "group one",
-  "group two",
-  "group three",
-  "group four",
-  "group five",
-];
-const items = [
-  { id: "1", group: groups[0], value: "Chicken" },
-  { id: "2", group: groups[0], value: "Monkey" },
-  { id: "3", group: groups[0], value: "Duck" },
-  { id: "4", group: groups[1], value: "Rhino" },
-  { id: "5", group: groups[1], value: "Sandwich" },
-  { id: "6", group: groups[2], value: "Ostrich" },
-  { id: "7", group: groups[2], value: "Flamingo" },
-  { id: "8", group: groups[3], value: "Sandwich" },
-  { id: "9", group: groups[3], value: "Ostrich" },
-  { id: "10", group: groups[3], value: "Flamingo" },
-  { id: "11", group: groups[4], value: "Ostrich" },
-  { id: "12", group: groups[4], value: "Flamingo" },
-];
+const Chicken = () => <div>React JSX Element</div>;
+
+const items = {
+  "group one": [
+    { id: "1", value: <Chicken /> },
+    { id: "2", value: "Javascript" },
+    { id: "3", value: "Typescript" },
+  ],
+
+  "group two": [
+    { id: "4", value: "Python" },
+    { id: "5", value: "Django" },
+  ],
+
+  "group three": [
+    { id: "6", value: "C#" },
+    { id: "7", value: "C++" },
+  ],
+
+  "group four": [
+    { id: "8", value: "PHP" },
+    { id: "9", value: "Laravel" },
+    { id: "10", value: "VueJs" },
+  ],
+  "group five": [
+    { id: "11", value: "Golang" },
+    { id: "12", value: "Andriod" },
+  ],
+};
 
 root.render(
   <React.StrictMode>
     <DnDMaker
-      defaultItems={items}
-      groups={groups}
+      items={items}
       onDrop={(items, movedItem) => console.log(items, movedItem)}
       onDragStart={(e, item) => console.log(e, item)}
       onDragOver={(e) => console.log(e, "over")}
-      placeholder="Put me here plz!"
     />
   </React.StrictMode>
 );

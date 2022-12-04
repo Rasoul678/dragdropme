@@ -38,6 +38,11 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@formkit/auto-animate@^1.0.0-beta.5":
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@formkit/auto-animate/-/auto-animate-1.0.0-beta.5.tgz#3fe4d520a82909cdcffa8854f26bc26ca4562045"
+  integrity sha512-WoSwyhAZPOe6RB/IgicOtCHtrWwEpfKIZ/H/nxpKfnZL9CB6hhhBGU5bCdMRw7YpAUF2CDlQa+WWh+gCqz5lDg==
+
 "@humanwhocodes/config-array@^0.11.6":
   version "0.11.7"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.7.tgz#38aec044c6c828f6ed51d5d7ae3d9b9faf6dbb0f"
@@ -1254,10 +1259,12 @@ dotenv@^7.0.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-7.0.0.tgz#a2be3cd52736673206e8a85fb5210eea29628e7c"
   integrity sha512-M3NhsLbV1i6HuGzBUH8vXrtxOk+tWmzWKDMbAVSUp3Zsjm7ywFeuwrUXhmhQyRK1q5B5GGy7hcXPbj3bnfZg2g==
 
-dragdropme@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/dragdropme/-/dragdropme-1.0.4.tgz#c4315f8dd914818dcc3c893e68a6f09d15f6aa85"
-  integrity sha512-L98/uwZML7svJAXfLQRbkYLtEeTCxLCD3R4SktDNw89XK4qrqmihGDsFuyzs3sM5aD6MrU+rICrg5ldAukhvXA==
+dragdropme@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/dragdropme/-/dragdropme-1.1.7.tgz#04f71f9f6f68727997a8372c927c5473944fa152"
+  integrity sha512-l4OKp1s2dGiAiYDn6JSdS3dqZ17WtEqqxaae0LvqCVAt23Zs3GrtXFspM1N+wS3VgDrj6fLrp4iDXpgPhF18ww==
+  dependencies:
+    "@formkit/auto-animate" "^1.0.0-beta.5"
 
 electron-to-chromium@^1.4.251:
   version "1.4.284"
